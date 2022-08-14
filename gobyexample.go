@@ -16,4 +16,10 @@ func main() {
 	fmt.Println(true || false)
 
 	fmt.Println(!true)
+
+	//slices
+
+	s := make(0, 10)
+	fmt.Println("emp", s)
+
 }
