@@ -13,6 +13,15 @@ func worker(done chan bool) {
 	done <- true
 }
 
+func ping(pings chan<- string, msg string) {
+	pings <- msg
+}
+
+func pong(pings <-chan string, pongs chan<- string) {
+	msg := <-pings
+	pongs <- msg
+}
+
 func main() {
 	//basic
 	messages := make(chan string)
@@ -32,8 +41,14 @@ func main() {
 	fmt.Println(<-buffer_messages)
 
 	//synchronization
-
 	done := make(chan bool, 1)
 	go worker(done)
 	<-done
+
+	//directions
+	pings := make(chan string, 1)
+	pongs := make(chan string, 1)
+	ping(pings, "passed message")
+	pong(pings, pongs)
+	fmt.Println(<-pongs)
 }
