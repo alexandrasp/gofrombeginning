@@ -1,8 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
+
+func worker(done chan bool) {
+	fmt.Print("working...")
+	time.Sleep(time.Second)
+	fmt.Println("done")
+
+	done <- true
+}
 
 func main() {
+	//basic
 	messages := make(chan string)
 
 	go func() { messages <- "ping" }()
@@ -10,6 +22,7 @@ func main() {
 	msg := <-messages
 	fmt.Println(msg)
 
+	//buffering
 	buffer_messages := make(chan string, 2)
 
 	buffer_messages <- "buffering"
@@ -17,4 +30,10 @@ func main() {
 
 	fmt.Println(<-buffer_messages)
 	fmt.Println(<-buffer_messages)
+
+	//synchronization
+
+	done := make(chan bool, 1)
+	go worker(done)
+	<-done
 }
